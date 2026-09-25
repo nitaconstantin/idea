@@ -6,6 +6,16 @@
                 Capture your thoughts. Make a plan.
             </div>
         </header>
+        <div>
+            <a href="/ideas" class="btn {{ request()->has('status') ? 'btn-outlined' : '' }}">All</a>
+            @foreach (App\IdeaStatus::cases() as $status )
+                <a href="/ideas?status={{ $status->value }}" 
+                    class="btn {{ request('status') === $status->value ? '' : 'btn-outlined'  }}">
+                    {{$status->label()}}
+                    <span class="text-xs pl-3">{{$statusCounts->get($status->value)}}</span>
+                </a>
+            @endforeach
+        </div>
         <div class="mt-10 text-muted-foreground">
             <div class="grid md:grid-cols-2 gap-6">        
                 @forelse ($ideas as $idea)
@@ -14,6 +24,7 @@
                         <div class="mt-1">
                            <x-idea.status-label status="{{ $idea->status }}">
                             {{ $idea->status->label() }}
+                           
                            </x-idea.status-label>
                             
                         </div>
