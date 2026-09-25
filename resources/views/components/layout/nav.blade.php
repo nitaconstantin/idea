@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto h-16 flex items-center justify-between">
         <div>
             <a href="/">
-                <img src="./images/logo.png" alt="Idea Logo" width="100">
+                <img src="{{  asset('images/logo.png') }}" alt="Idea Logo" width="100">
             </a>
         </div>
         <div class="flex gap-x-5">
