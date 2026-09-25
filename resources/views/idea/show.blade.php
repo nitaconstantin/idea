@@ -28,7 +28,7 @@
                     {{ $idea->status->label() }}
                 </x-idea.status-label>
                 <div class="text-muted-foreground text-sm">
-                    {{ $idea->created_at->diffforHumans() }}
+                    {{ $idea->created_at->diffForHumans() }}
                 </div>
             </div>
             <x-card class="mt-6">
