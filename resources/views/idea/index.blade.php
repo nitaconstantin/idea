@@ -41,7 +41,7 @@
 
                         </div>
                         <div class="mt-4">
-                            {{ $idea->created_at->diffforHumans() }}
+                            {{ $idea->created_at->diffForHumans() }}
                         </div>
                     </x-card>
                 
@@ -55,7 +55,15 @@
         </div>
         <!-- modal --> 
         <x-modal title="New Idea" name="create-idea">
-            <form x-data="{status: 'pending' }" action="{{ route('idea.store') }}" method="POST">
+            <form 
+                x-data="{
+                status: 'pending',
+                newLink: '',
+                links: [] 
+                }" 
+                action="{{ route('idea.store') }}"
+                method="POST"
+            >
                 @csrf
 
                 <div class="space-y-6">
@@ -67,37 +75,77 @@
                         required
                     />
                 
-                <div class="space-y-2">
-                    <label for="status" class="label">Status</label>
-                    <div class="flex gap-x-3">
-                        @foreach (App\IdeaStatus::cases() as $status)
-                            <button 
-                                type="button" 
-                                @click="status = @js($status->value)"
-                                class="btn flex-1 h-10 "
-                                {{-- :class="status === @js($status->value) ? '' : 'btn-outlined'" --}}
-                                :class="{'btn-outlined' : status !== @js($status->value)}"
-                                >
-                                    {{ $status->label() }}
-                            </button>
-                            
-                        @endforeach
-                        <input type="hidden" name="status" :value="status" class="input">
+                    <div class="space-y-2">
+                        <label for="status" class="label">Status</label>
+                        <div class="flex gap-x-3">
+                            @foreach (App\IdeaStatus::cases() as $status)
+                                <button 
+                                    type="button" 
+                                    @click="status = @js($status->value)"
+                                    class="btn flex-1 h-10 "
+                                    {{-- :class="status === @js($status->value) ? '' : 'btn-outlined'" --}}
+                                    :class="{'btn-outlined' : status !== @js($status->value)}"
+                                    >
+                                        {{ $status->label() }}
+                                </button>
+                                
+                            @endforeach
+                            <input type="hidden" name="status" :value="status" class="input">
+                        </div>
+                        {{-- @error('status')
+                            <p class="error">{{ $message }}</p>
+                        @enderror --}}
+                        <x-form.error name="status"/>
                     </div>
-                    {{-- @error('status')
-                        <p class="error">{{ $message }}</p>
-                    @enderror --}}
-                    <x-form.error name="status"/>
-                </div>
-
+    
                     <x-form.field
                         label="Description"
                         name="description"
                         type="textarea"
                         placeholder="Describe your idea..."
                     />
+                    <div>
+                        
+                        <fieldset class="space-y-3">
+                            <legend class="label">Links</legend>
+                            <template x-for="(link, index) in links" :key="link">
+                                <div class="flex gap-x-2 items-center">
+                                    <input type="text" name="links[]" x-model="link" class="input">
+                                    <button 
+                                        type="button" 
+                                        aria-label="Remove link"
+                                        @click="links.splice(index, 1)"
+                                        class="form-muted-icon"
+                                    >
+                                        <x-icons.close/>
+                                    </button>
+                                </div>    
+                            </template>
+                            <div class="flex gap-x-2 items-center">
+                                <input 
+                                    x-model="newLink"
+                                    type="url" 
+                                    id="new-link"
+                                    placeholder="http://example.com"
+                                    autocomplete="url"
+                                    class="input flex-1"
+                                    spellcheck="false"
+                                >
+                                <button 
+                                    type="button" 
+                                    @click="links.push(newLink.trim()); newLink = '';"
+                                    :disabled="newLink.trim().length === 0"
+                                    aria-label="Add a new link"
+                                    class="form-muted-icon"
+                                    >
+                                        <x-icons.close class="rotate-45"/>
+                                </button>
+                            </div>
+                           {{-- <pre x-text="JSON.stringify(links)"></pre> --}}
+                        </fieldset>
+                    </div>
                     <div class="flex justify-end gap-x-5">
-                        <button type="button" @click="$dispatch('close-modal')">Cancel</button>
+                        <button type="reset" @click="$dispatch('close-modal')">Cancel</button>
                         <button type="submit" class="btn">Create</button>
                     </div>
                 </div>
