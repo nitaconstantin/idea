@@ -11,6 +11,7 @@ class Step extends Model
 {
     /** @use HasFactory<StepFactory> */
     use HasFactory;
+    protected $fillable = ['description', 'idea_id'];
 
     public function idea(): BelongsTo
     {
