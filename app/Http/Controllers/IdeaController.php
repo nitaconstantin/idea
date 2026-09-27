@@ -25,11 +25,11 @@ class IdeaController extends Controller
         // }
 
         $ideas = $user
-            ->ideas()
-            // ->when($status, fn ($query, $status) => $query->where('status', $status))
-            ->when(in_array($request->status, IdeaStatus::values()), fn($query) =>$query->where('status', $request->status))
-            ->latest()
-            ->get();
+                ->ideas()
+                ->with('steps')
+                ->when(in_array($request->status, IdeaStatus::values()), fn($query) => $query->where('status', $request->status))
+                ->latest()
+                ->get();
 
         // select status, count(*) from ideas group by status
         // $counts = Auth::user()->ideas()

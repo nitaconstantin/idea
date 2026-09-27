@@ -130,9 +130,16 @@
                         
                         <fieldset class="space-y-3">
                             <legend class="label">Actionable Steps</legend>
-                            <template x-for="(step, index) in steps" :key="step">
+                            <template x-for="(step, index) in steps" :key="index"> {{-- Folosim index pentru cheie --}}
                                 <div class="flex gap-x-2 items-center">
-                                    <input type="text" name="steps[]" x-model="step" class="input">
+                                    <!-- Corectat: x-model folosește array-ul principal, adăugat și :value -->
+                                    <input 
+                                        type="text" 
+                                        name="steps[]" 
+                                        x-model="steps[index]" 
+                                        :value="steps[index]" 
+                                        class="input"
+                                    >
                                     <button 
                                         type="button" 
                                         aria-label="Remove step"
@@ -171,9 +178,16 @@
                         
                         <fieldset class="space-y-3">
                             <legend class="label">Links</legend>
-                            <template x-for="(link, index) in links" :key="link">
+                            <template x-for="(link, index) in links" :key="index">
                                 <div class="flex gap-x-2 items-center">
-                                    <input type="text" name="links[]" x-model="link" class="input">
+                                    <!-- Corectat: x-model folosește links[index], adăugat și :value -->
+                                    <input 
+                                        type="text" 
+                                        name="links[]" 
+                                        x-model="links[index]" 
+                                        :value="links[index]" 
+                                        class="input"
+                                    >
                                     <button 
                                         type="button" 
                                         aria-label="Remove link"

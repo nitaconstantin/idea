@@ -2,13 +2,14 @@
 
 namespace App\Actions;
 
+use App\Models\Idea;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CreateIdea
 {
-    public function handle(array $attributes, User $user = null)
+    public function handle(array $attributes, User $user = null): ?Idea
     {
         /**
          *  @var User
@@ -21,7 +22,7 @@ class CreateIdea
             'title', 'description', 'status', 'links'
          ])->toArray();
 
-         if($attributes['immage'] ?? false){
+         if($attributes['image'] ?? false){
             $data['image_path'] = $attributes['image']->store('ideas', 'public');
          }
 
@@ -29,12 +30,18 @@ class CreateIdea
 
          // dd($request->steps);
 
-        DB::transaction(function() use ($user, $data){
+         $idea = null;
+
+        DB::transaction(function() use ($user, $data, $attributes, &$idea){
             $idea = $user->ideas()->create($data);
 
             $steps = collect($attributes['steps'] ?? [])->map(fn($step)=>['description' => $step]);
             $idea->steps()->createMany($steps);
+
+            
         });
+
+        return $idea ? $idea->load('steps') : null;
 
          
  
