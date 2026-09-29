@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\CreateIdea;
+use App\Http\Requests\IdeaRequest;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
 use App\IdeaStatus;
@@ -61,7 +62,7 @@ class IdeaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreIdeaRequest $request, CreateIdea $action)
+    public function store(IdeaRequest $request, CreateIdea $action)
     {
         // dd($request->all());
         // $idea = Auth::user()->ideas()->create($request->safe()->except(['steps', 'image']));
@@ -110,9 +111,12 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIdeaRequest $request, Idea $idea)
+    public function update(IdeaRequest $request, Idea $idea)
     {
+        dd($request->all());
         FacadesGate::authorize('workWith', $idea);
+
+        
     }
 
     /**
