@@ -7,8 +7,8 @@
         newLink: '',
         links: @js(old('links', $idea->links)),
         newStep: '',
-        steps:@js(old('steps', $idea->steps->map(fn($step) => $step->description)))
-      
+        {{-- steps:@js(old('steps', $idea->steps->map(fn($step) => $step->description))) --}}
+        steps:@js(old('steps', $idea->steps->map->only(['id', 'description', 'completed'])))
         }" 
         action="{{ $idea->exists ? route('idea.update', $idea) : route('idea.store') }}"
         method="POST"
@@ -85,11 +85,18 @@
                             <!-- Corectat: x-model folosește array-ul principal, adăugat și :value -->
                             <input 
                                 type="text" 
-                                name="steps[]" 
-                                x-model="steps[index]" 
-                                :value="steps[index]" 
+                                :name="`steps[${index}][description]`" 
+                                x-model="steps[index].description" 
+                               
                                 class="input"
-                            >
+                            > 
+                            <input 
+                            type="hidden" 
+                            :name="`steps[${index}][completed] `" 
+                            :value="steps[index].completed  ? '1' : '0'" 
+                           
+                            class="input"
+                        >
                             <button 
                                 type="button" 
                                 aria-label="Remove step"
@@ -110,7 +117,10 @@
                         >
                         <button 
                             type="button" 
-                            @click="steps.push(newStep.trim()); newStep = '';"
+                            @click="
+                                steps.push({description: newStep.trim(), completed: false}); 
+                                newStep = '';
+                            "
                             :disabled="newStep.trim().length === 0"
                             aria-label="Add a new step"
                             class="form-muted-icon"

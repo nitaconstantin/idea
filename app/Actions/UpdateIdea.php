@@ -7,9 +7,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CreateIdea
+class UpdateIdea
 {
-    public function handle(array $attributes, User $user = null): ?Idea
+    public function handle(array $attributes, Idea $idea)
     {
         /**
          *  @var User
@@ -17,7 +17,8 @@ class CreateIdea
         // dd($attributes);
 
          // dd($request->all());
-         $user ??= Auth::user();
+        //  $user ??= Auth::user();
+
          $data = collect($attributes)->only([
             'title', 'description', 'status', 'links'
          ])->toArray();
@@ -30,13 +31,17 @@ class CreateIdea
 
          // dd($request->steps);
 
-         $idea = null;
+        //  $idea = null;
 
-        DB::transaction(function() use ($user, $data, $attributes, &$idea){
-            $idea = $user->ideas()->create($data);
+        DB::transaction(function() use ($idea, $data, $attributes){
+            $idea->update($data);
+
+            $idea->steps()->delete();
+
+            $idea->steps()->createMany($attributes['steps'] ?? []);
 
             // $steps = collect($attributes['steps'] ?? [])->map(fn($step)=>['description' => $step]);
-            $idea->steps()->createMany($$attributes['steps'] ?? []);
+            // $idea->steps()->createMany($steps);
 
             
         });
