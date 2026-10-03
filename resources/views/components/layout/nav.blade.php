@@ -8,6 +8,7 @@
         <div class="flex gap-x-5">
            
             @auth
+                <a href="{{ route('profile.edit') }}" class="btn-ghost">Edit Profile</a>
                 <form action="/logout" method="POST">
                     @csrf
                     <button type="submit" class="btn">Log out</button>
